@@ -1,11 +1,14 @@
 #include <stdio.h>
+#include <unistd.h>
 
 // Desafio Batalha Naval - MateCheck
 // Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
 // Siga os comentários para implementar cada parte do desafio.
 
-int main() {
 
+//#define TAM_TAB 10;
+
+int main() {
 
     const int agua = 0;
 
@@ -215,18 +218,15 @@ int main() {
         }
     }
 
-    
 
-
-
-
+    printf("\n");
 
     // 6.Exibindo tabuleiro
 
     printf(" ==== TABULEIRO BATALHA NAVAL ==== \n");
     printf("\n");
 
-    printf("  "); // Espaço para alinhamento estetico das colunas no tabuleiro
+    printf("   "); // Espaço para alinhamento estetico das colunas no tabuleiro
 
     for(int i = 0; i < 10; i++){
         printf(" %c " , coluna[i]); // Exibindo letras que representam as colunas
@@ -237,44 +237,184 @@ int main() {
     for(int i = 0; i < 10; i++){
             printf("%2d " , i + 1); // Para representar a numeração das linhas na tabela 
         for(int j = 0; j < 10; j++){
-            printf("%ds ", tabuleiro[i][j]);
+            printf(" %d ", tabuleiro[i][j]);
         }
         printf("\n");
     }
 
+
+    printf("\n\n");
+
+    // Declaração das variaveis para escolha e origem de linha e coluna
+
+    int escolha;
+    int origem_l;
+    int origem_c;
+
+    // Declaração das matrizes de ataques
+
+    int ataque_cone[10][10] = {agua};
+    int ataque_cruz[10][10] = {agua};
+    int ataque_octaedro[10][10] = {agua};
+
+    //Loop 
+    do{
+        
+        
+        
+    printf("\n");
+
+    printf("==== MENU DE ESCOLHA ==== \n");
+
+    printf("Ataques: \n");
+    printf("[1] Cone \n");
+    printf("[2] Cruz \n");
+    printf("[3] Octaedro \n");
+    printf("[4] Sair \n");
+
+    printf("Escolha o ataque: ");
+    scanf("%d" , &escolha);
+    
+
+
+    //Switch para escolher um ataque
+    
+    switch (escolha)
+    {
+    case 1:
+
+        //ataque cone
+    
+
+        origem_l = 2;  origem_c = 3;
+
+
+        for (int i = 0 ; i < 3; i++){   // loop para adicionar as posições do cone na matriz ataque cone
+            for(int j = -i; j <= i; j++){
+                int l = origem_l + i;
+                int c = origem_c + j;
+                if((l >= 0 && l < 10) && (c >= 0 && c < 10)){
+                    ataque_cone[l][c] = 1;
+                
+            }
+        }
+    }
+
+        break;
+
+    case 2:
+
+        //ataque cruz 
+        
+
+        origem_l = 7; origem_c = 6;
+
+        for(int i = -2; i <= 2 ; i++){ // loop para adicionar as posições da cruz na matriz ataque ataque cruz 
+            int l = origem_l + i;
+            int c = origem_c + i; 
+            if((origem_l >= 0 && origem_l < 10) && (c >= 0 && c < 10)){
+                ataque_cruz[origem_l][c] = 2;
+            }
+            if((l >= 0 && l < 10) && (origem_c >= 0 && origem_c < 10)){
+                ataque_cruz[l][origem_c] = 2;
+            }
+        }
+
+        break;
+
+
+
+
+    case 3:
+ 
+
+        origem_l = 2; origem_c = 7;
+        
+        for(int i = -2; i <= 2; i++){ // loop para adicionar as posições do octaedro na matriz ataque octaedro
+            for(int j = -2 ; j <= 2; j++){
+                int l = origem_l + i;
+                int c = origem_c + j;
+                if((l == 0 && c == 7) || (l == 1 && c >= 6 && c < 9) || (l == 2 && c >= 5 && c < 10) || (l == 3 && c >= 6 && c < 9) || (l == 4 && c == 7)){// e assim por diante //
+            
+                    if((l >= 0 && l < 10) && (c >= 0 && c < 10))
+                        ataque_octaedro[l][c] = 5;
+                }
+            }
+        }
+
+        break;
+    
+    case 4:
+        printf("Saindo...");
+        sleep(1);
+        printf("Programa Finalizado");
+        
+
+        return 1;
+
+    default:
+        printf("\n");
+        printf("Opção inválida ! \n");
+
+        break;
+    }
+
+
+
+    //SOPREPOSIÇÃO TABULEIRO
+
+    for(int i = 0; i < 10; i++){
+
+        for(int j = 0; j < 10; j++){
+            if(ataque_cone[i][j] != 0){
+
+                tabuleiro[i][j] = ataque_cone[i][j];
+            }
+            else if (ataque_cruz[i][j] != 0){
+                tabuleiro[i][j] = ataque_cruz[i][j];
+            }
+            else if(ataque_octaedro[i][j] != 0){
+                tabuleiro[i][j] = ataque_octaedro[i][j];
+            }
+    
+        }
+    }
+
+    //Exibição do tabuleiro apos ataque
+
+    printf("\n\n");
+
+    printf("==== TABULEIRO APOS OS ATAQUES ==== \n");
+    
+    printf("\n");
+
+    printf("   ");
+
+    for(int i = 0; i < 10; i++){
+            printf(" %c ", coluna[i]);
+        }
+
+    printf("\n");
+
+    for(int i = 0; i < 10; i++){
+            printf("%2d " , i + 1);
+        for(int j = 0; j < 10; j++){
+           if((tabuleiro[i][j] != 0) && (tabuleiro[i][j] != 3)){
+                printf(" * ");
+
+           }else{
+                printf(" %d " , tabuleiro[i][j]);
+           }
+        }
+        printf("\n");
+    }
+
+
+
+    } while (escolha != 4);
+    
+
+    //Comentar codigo 
+
     return 0;
 }
-
-
-
-    // Nível Novato - Posicionamento dos Navios
-    // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
-    // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
-    // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
-
-
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
-
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
-
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
-    
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
-
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
